@@ -1,0 +1,85 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 EXTERN           switch_pointers
+    2 00000000                 AREA             handle_pend,CODE,READONLY
+    3 00000000                 GLOBAL           PendSV_Handler
+    4 00000000                 PRESERVE8
+    5 00000000         PendSV_Handler
+    6 00000000         
+    7 00000000 F3EF 8009       MRS              r0, PSP     ;loads PSP address 
+                                                            into r0
+    8 00000004 E920 0FF0       STMDB            r0!, {r4-r11}
+    9 00000008 F380 8809       MSR              PSP, r0     ; After decrementin
+                                                            g r0, save r0 into 
+                                                            PSP
+   10 0000000C         
+   11 0000000C F7FF FFFE       BL               switch_pointers
+   12 00000010         
+   13 00000010         ;MRS r0, PSP ;MRS loads PSP’s address into r0
+   14 00000010 E8B0 0FF0       LDMIA            r0!, {r4-r11}
+   15 00000014         
+   16 00000014 F380 8809       MSR              PSP, r0
+   17 00000018         
+   18 00000018         ;write the magic value of 0xFFFFFFFD to LR (R14)
+   19 00000018 F06F 0E02       MOV              LR, #0xFFFFFFFD
+   20 0000001C         ;return - Note that, since LR has the magic value, the m
+                       icrocontroller reloads it from the 
+   21 0000001C         ;stack frame it pushed on at the start of this call. Fin
+                       ding that value and aligning your stack
+   22 0000001C         ;will 100% cause you grief while you try to do a context
+                        switch, but how to do that depends
+   23 0000001C         ;so much on your design that we can't tell you how!
+   24 0000001C         
+   25 0000001C 4770            BX               LR
+   26 0000001E         
+   27 0000001E                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
+ork --depend=.\objects\svc_caller.d -o.\objects\svc_caller.o -I.\RTE\Device\LPC
+1768 -I.\RTE\_Target_1 -IC:\Software\Keil_v5\ARM\PACK\ARM\CMSIS\5.8.0\CMSIS\Cor
+e\Include -IC:\Software\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.7.0\Device\Include 
+--predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 531" --predefin
+e="_RTE_ SETA 1" --predefine="LPC175x_6x SETA 1" --predefine="_RTE_ SETA 1" --l
+ist=.\listings\svc_caller.lst svc_caller.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+PendSV_Handler 00000000
+
+Symbol: PendSV_Handler
+   Definitions
+      At line 5 in file svc_caller.s
+   Uses
+      At line 3 in file svc_caller.s
+Comment: PendSV_Handler used once
+handle_pend 00000000
+
+Symbol: handle_pend
+   Definitions
+      At line 2 in file svc_caller.s
+   Uses
+      None
+Comment: handle_pend unused
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+switch_pointers 00000000
+
+Symbol: switch_pointers
+   Definitions
+      At line 1 in file svc_caller.s
+   Uses
+      At line 11 in file svc_caller.s
+Comment: switch_pointers used once
+1 symbol
+337 symbols in table
